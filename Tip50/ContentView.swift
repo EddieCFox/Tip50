@@ -9,8 +9,8 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @State var billAmount = 0.0
-    @State var tipPercentage = 0.0
+    @State var billAmount: Double = 0.0
+    @State var tipPercentage: Double = 20.0
     
     // Computed properties for tip and total
     // See: https://docs.swift.org/swift-book/documentation/the-swift-programming-language/properties/#
@@ -32,7 +32,7 @@ struct ContentView: View {
                 Text("$")
                     .font(.headline)
                     .fontWeight(.bold)
-                TextField("$0.00", value: $billAmount, format: .number)
+                TextField("0.00", value: $billAmount, format: .number)
                     .textFieldStyle(.roundedBorder)
                     .keyboardType(.decimalPad)
             }
@@ -51,12 +51,14 @@ struct ContentView: View {
                 Text("$\(total, specifier: "%.2f")")
             }
             
+        }
+        
+        VStack {
             HStack {
                 Text("Tip percentage:")
                     .font(.headline)
-                TextField("%", value: $tipPercentage, format: .number)
-                    .textFieldStyle(.roundedBorder)
-                    .keyboardType(.decimalPad)
+                Slider(value: $tipPercentage, in: 0...40, step: 1.0)
+                Text("\(tipPercentage, specifier: "%.0f")")
                 Text("%")
                     .font(.headline)
                     .fontWeight(.bold)
