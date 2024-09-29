@@ -64,6 +64,19 @@ struct ContentView: View {
                     .fontWeight(.bold)
             }
             .padding()
+            Text("Common percentages")
+                .font(.subheadline)
+                .fontWeight(.medium)
+
+            Picker("Common percentages", selection: $tipPercentage) {
+                Text("10%").tag(10.0)
+                Text("15%").tag(15.0)
+                Text("18%").tag(18.0)
+                Text("20%").tag(20.0)
+                Text("25%").tag(25.0)
+            }
+            .pickerStyle(.segmented)
+
             
             Spacer()
         }
