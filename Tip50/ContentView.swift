@@ -12,6 +12,9 @@ struct ContentView: View {
     @State var billAmount: Double = 0.0
     @State var tipPercentage: Double = 20.0
     
+    // The number of people the bill is being split between
+    @State var splitCount: Int = 1
+        
     // Computed properties for tip and total
     // See: https://docs.swift.org/swift-book/documentation/the-swift-programming-language/properties/#
     var tip: Double {
@@ -20,6 +23,14 @@ struct ContentView: View {
 
     var total: Double {
         return billAmount + tip
+    }
+    
+    var splitTotal: Double {
+        return (total / Double(splitCount))
+    }
+    
+    var splitTip: Double {
+        return (tip / Double(splitCount))
     }
     
     var body: some View {
@@ -76,9 +87,17 @@ struct ContentView: View {
                 Text("25%").tag(25.0)
             }
             .pickerStyle(.segmented)
-
             
-            Spacer()
+        }
+        .padding()
+
+        VStack {
+            HStack {
+                Stepper("Number of people splitting the bill:  \(splitCount)", value: $splitCount, in: 1...100)
+            }
+            .padding()
+            Text("Total Bill per person: $\(splitTotal, specifier: "%.2f")")
+            Text("Total Tip per person: $\(splitTip, specifier: "%.2f")")
         }
     }
 }
