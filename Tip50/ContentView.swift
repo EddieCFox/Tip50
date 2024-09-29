@@ -13,7 +13,8 @@ struct ContentView: View {
     @State var tipPercentage: Double = 20.0
     
     // The number of people the bill is being split between
-    @State var splitCount: Int = 1
+    @State var selectedSplitCount: String = "1"
+    @State var otherSplitCount: String = ""
         
     // Computed properties for tip and total
     // See: https://docs.swift.org/swift-book/documentation/the-swift-programming-language/properties/#
@@ -31,6 +32,16 @@ struct ContentView: View {
     
     var splitTip: Double {
         return (tip / Double(splitCount))
+    }
+    
+    var splitCount: Int {
+        if selectedSplitCount == "Other" {
+            return Int(otherSplitCount) ?? 1
+        }
+        
+        else {
+            return Int(selectedSplitCount) ?? 1
+        }
     }
     
     var body: some View {
@@ -92,13 +103,39 @@ struct ContentView: View {
         .padding()
 
         VStack {
+            
+            Text("Number of people splitting the bill:")
+                .padding()
+                .multilineTextAlignment(.center)
+            
             HStack {
-                Stepper("Number of people splitting the bill:  \(splitCount)", value: $splitCount, in: 1...100)
+
+                Picker("Number of people", selection: $selectedSplitCount) {
+                    Text("1").tag("1")
+                    Text("2").tag("2")
+                    Text("3").tag("3")
+                    Text("4").tag("4")
+                    Text("5").tag("5")
+                    Text("6").tag("6")
+                    Text("Other").tag("Other")
+                }
+                .pickerStyle(.segmented)
+                .padding()
+                
+                if selectedSplitCount == "Other" {
+                    TextField("# of people", text: $otherSplitCount)
+                        .keyboardType(.decimalPad)
+                        .textFieldStyle(.roundedBorder)
+                        .padding()
+                }
             }
-            .padding()
+        }
+        
+        VStack {
             Text("Total Bill per person: $\(splitTotal, specifier: "%.2f")")
             Text("Total Tip per person: $\(splitTip, specifier: "%.2f")")
         }
+        .padding()
     }
 }
 #Preview {
