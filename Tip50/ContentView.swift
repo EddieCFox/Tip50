@@ -12,6 +12,11 @@ struct ContentView: View {
     @State var billAmount: Double = 0.0
     @State var tipPercentage: Double = 20.0
     
+    var effectiveTipPercentage: Double {
+        guard billAmount > 0 else { return 0.0 }
+        return ((total - billAmount) / billAmount) * 100
+    }
+    
     // The number of people the bill is being split between
     @State var selectedSplitCount: String = "1"
     @State var otherSplitCount: String = ""
@@ -146,6 +151,12 @@ struct ContentView: View {
                         }
                     }
                 }
+                
+                Text("Effective tip percentage: \(effectiveTipPercentage, specifier: "%.1f")%")
+                    .font(.subheadline)
+                    .foregroundStyle(.gray)
+                    .padding(.top, -20)
+                    .padding(.bottom, 20)
                 Text("Common percentages")
                     .font(.subheadline)
                     .fontWeight(.medium)
@@ -211,11 +222,11 @@ struct ContentView: View {
         }
         .ignoresSafeArea(.keyboard)
     }
-    
+
     func shareText() -> String {
         return """
         Bill amount: $\(String(format: "%.2f", billAmount))
-        Tip percentage: \(String(format: "%.0f", tipPercentage))%
+        Tip percentage: \(String(format: "%.1f", effectiveTipPercentage))%
         Tip: $\(String(format: "%.2f", tip))
         Grand total: $\(String(format: "%.2f", total))
         Total per person: $\(String(format: "%.2f", splitTotal))
