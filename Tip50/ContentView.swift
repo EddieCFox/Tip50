@@ -32,6 +32,13 @@ struct ContentView: View {
     // If roundToNearest is true, return a rounded total, otherwise, return the unrounded total
     var total: Double {
         if roundToNearest {
+            let minTip = max(0.01, billAmount * 0.01)
+            let roundedTotal = unroundedTotal.rounded()
+            
+            if (roundedTotal - billAmount < minTip) {
+                return billAmount + minTip
+            }
+            
             return unroundedTotal.rounded()
         }
         
@@ -91,7 +98,7 @@ struct ContentView: View {
             HStack {
                 Text("Tip percentage:")
                     .font(.headline)
-                Slider(value: $tipPercentage, in: 0...40, step: 1.0)
+                Slider(value: $tipPercentage, in: 1...50, step: 1.0)
                 Text("\(tipPercentage, specifier: "%.0f")")
                 Text("%")
                     .font(.headline)
@@ -110,9 +117,12 @@ struct ContentView: View {
                 Text("25%").tag(25.0)
             }
             .pickerStyle(.segmented)
+            .padding(.bottom, 10)
             
             Toggle(isOn: $roundToNearest) {
-                Text("Round to nearest dollar")
+                Text("Round total to nearest dollar")
+                Text("Rounding will not lower total below bill amount")
+                    .font(.caption)
             }
             
         }
