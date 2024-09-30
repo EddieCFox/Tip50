@@ -81,126 +81,146 @@ struct ContentView: View {
     @State private var isEditingTipPercentage: Bool = false
 
     var body: some View {
-        VStack {
-            HStack {
-            // https://www.hackingwithswift.com/quick-start/swiftui/how-to-format-a-textfield-for-numbers
-                Text("Bill Amount:")
-                    .font(.headline)
-                    .padding(.leading, -10)
-                Text("$")
-                    .font(.headline)
-                    .fontWeight(.bold)
-                TextField("0.00", value: $billAmount, format: .number)
-                    .textFieldStyle(.roundedBorder)
-                    .keyboardType(.decimalPad)
-                    .focused($focusedField, equals: .billAmount)
-            }
-            .padding()
-            
-            HStack {
-                Text("Tip:")
-                    .font(.headline)
-                Text("$\(tip, specifier: "%.2f")")
-            }
-            .padding()
-            
-            HStack {
-                Text("Grand Total:")
-                    .font(.headline)
-                Text("$\(total, specifier: "%.2f")")
-            }
-            
-        }
         
-        VStack {
-            HStack {
-                Text("Tip percentage:")
-                    .font(.headline)
-                Slider(value: $tipPercentage, in: 1...50, step: 1.0)
-                
-                if isEditingTipPercentage {
-                    // Show the TextField for manual percentage input
-                    TextField("Enter %", value: $tipPercentage, format: .number)
+        ScrollView {
+            VStack {
+                HStack {
+                // https://www.hackingwithswift.com/quick-start/swiftui/how-to-format-a-textfield-for-numbers
+                    Text("Bill Amount:")
+                        .font(.headline)
+                        .padding(.leading, -10)
+                    Text("$")
+                        .font(.headline)
+                        .fontWeight(.bold)
+                    TextField("0.00", value: $billAmount, format: .number)
                         .textFieldStyle(.roundedBorder)
                         .keyboardType(.decimalPad)
-                        .focused($focusedField, equals: .tipPercentage)
-                } else {
-                    Text("\(tipPercentage, specifier: "%.0f")%")
-                        .font(.headline)
-                        .fontWeight(.semibold)
-                        .onTapGesture {
-                            isEditingTipPercentage = true
-                            focusedField = .tipPercentage
-                        }
+                        .focused($focusedField, equals: .billAmount)
                 }
+                .padding()
+                
+                HStack {
+                    Text("Tip:")
+                        .font(.headline)
+                    Text("$\(tip, specifier: "%.2f")")
+                }
+                .padding()
+                
+                HStack {
+                    Text("Grand Total:")
+                        .font(.headline)
+                    Text("$\(total, specifier: "%.2f")")
+                }
+                
+            }
+            
+            VStack {
+                HStack {
+                    Text("Tip percentage:")
+                        .font(.headline)
+                    Slider(value: $tipPercentage, in: 1...50, step: 1.0)
+                    
+                    if isEditingTipPercentage {
+                        // Show the TextField for manual percentage input
+                        TextField("Enter %", value: $tipPercentage, format: .number)
+                            .textFieldStyle(.roundedBorder)
+                            .keyboardType(.decimalPad)
+                            .focused($focusedField, equals: .tipPercentage)
+                    } else {
+                        Text("\(tipPercentage, specifier: "%.0f")%")
+                            .font(.headline)
+                            .fontWeight(.semibold)
+                            .onTapGesture {
+                                isEditingTipPercentage = true
+                                focusedField = .tipPercentage
+                            }
+                    }
+                }
+                .padding()
+                .toolbar {
+                    ToolbarItemGroup(placement: .keyboard) {
+                        Spacer()
+                        Button("Done") {
+                            focusedField = nil
+                            isEditingTipPercentage = false
+                        }
+                    }
+                }
+                Text("Common percentages")
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+
+                Picker("Common percentages", selection: $tipPercentage) {
+                    Text("10%").tag(10.0)
+                    Text("15%").tag(15.0)
+                    Text("18%").tag(18.0)
+                    Text("20%").tag(20.0)
+                    Text("25%").tag(25.0)
+                }
+                .pickerStyle(.segmented)
+                .padding(.bottom, 10)
+                
+                Toggle(isOn: $roundToNearest) {
+                    Text("Round total to nearest dollar")
+                    Text("Rounding will not lower total below bill amount")
+                        .font(.caption)
+                }
+                
             }
             .padding()
-            .toolbar {
-                ToolbarItemGroup(placement: .keyboard) {
-                    Spacer()
-                    Button("Done") {
-                        focusedField = nil
-                        isEditingTipPercentage = false
+
+            VStack {
+                
+                Text("Number of people splitting the bill:")
+                    .padding()
+                    .multilineTextAlignment(.center)
+                
+                HStack {
+
+                    Picker("Number of people", selection: $selectedSplitCount) {
+                        Text("1").tag("1")
+                        Text("2").tag("2")
+                        Text("3").tag("3")
+                        Text("4").tag("4")
+                        Text("5").tag("5")
+                        Text("6").tag("6")
+                        Text("Other").tag("Other")
+                    }
+                    .pickerStyle(.segmented)
+                    .padding()
+                    
+                    if selectedSplitCount == "Other" {
+                        TextField("# of people", text: $otherSplitCount)
+                            .keyboardType(.decimalPad)
+                            .textFieldStyle(.roundedBorder)
+                            .padding()
                     }
                 }
             }
-            Text("Common percentages")
-                .font(.subheadline)
-                .fontWeight(.medium)
-
-            Picker("Common percentages", selection: $tipPercentage) {
-                Text("10%").tag(10.0)
-                Text("15%").tag(15.0)
-                Text("18%").tag(18.0)
-                Text("20%").tag(20.0)
-                Text("25%").tag(25.0)
-            }
-            .pickerStyle(.segmented)
-            .padding(.bottom, 10)
             
-            Toggle(isOn: $roundToNearest) {
-                Text("Round total to nearest dollar")
-                Text("Rounding will not lower total below bill amount")
-                    .font(.caption)
-            }
-            
-        }
-        .padding()
-
-        VStack {
-            
-            Text("Number of people splitting the bill:")
-                .padding()
-                .multilineTextAlignment(.center)
-            
-            HStack {
-
-                Picker("Number of people", selection: $selectedSplitCount) {
-                    Text("1").tag("1")
-                    Text("2").tag("2")
-                    Text("3").tag("3")
-                    Text("4").tag("4")
-                    Text("5").tag("5")
-                    Text("6").tag("6")
-                    Text("Other").tag("Other")
-                }
-                .pickerStyle(.segmented)
-                .padding()
-                
-                if selectedSplitCount == "Other" {
-                    TextField("# of people", text: $otherSplitCount)
-                        .keyboardType(.decimalPad)
-                        .textFieldStyle(.roundedBorder)
+            VStack {
+                Text("Total Bill per person: $\(splitTotal, specifier: "%.2f")")
+                Text("Total Tip per person: $\(splitTip, specifier: "%.2f")")
+                ShareLink(item: shareText()) {
+                    Label("Share Details", systemImage: "square.and.arrow.up")
+                        .font(.headline)
                         .padding()
                 }
             }
+            .padding()
         }
-        
-        VStack {
-            Text("Total Bill per person: $\(splitTotal, specifier: "%.2f")")
-            Text("Total Tip per person: $\(splitTip, specifier: "%.2f")")
-        }
-        .padding()
+        .ignoresSafeArea(.keyboard)
+    }
+    
+    func shareText() -> String {
+        return """
+        Bill amount: $\(String(format: "%.2f", billAmount))
+        Tip percentage: \(String(format: "%.0f", tipPercentage))%
+        Tip: $\(String(format: "%.2f", tip))
+        Grand total: $\(String(format: "%.2f", total))
+        Total per person: $\(String(format: "%.2f", splitTotal))
+        Tip per person: $\(String(format: "%.2f", splitTip))
+        """
     }
 }
 #Preview {
