@@ -73,6 +73,13 @@ struct ContentView: View {
         }
     }
     
+    enum Field {
+        case billAmount, tipPercentage
+    }
+    @FocusState private var focusedField: Field?
+    
+    @State private var isEditingTipPercentage: Bool = false
+
     var body: some View {
         VStack {
             HStack {
@@ -86,6 +93,7 @@ struct ContentView: View {
                 TextField("0.00", value: $billAmount, format: .number)
                     .textFieldStyle(.roundedBorder)
                     .keyboardType(.decimalPad)
+                    .focused($focusedField, equals: .billAmount)
             }
             .padding()
             
@@ -109,12 +117,33 @@ struct ContentView: View {
                 Text("Tip percentage:")
                     .font(.headline)
                 Slider(value: $tipPercentage, in: 1...50, step: 1.0)
-                Text("\(tipPercentage, specifier: "%.0f")")
-                Text("%")
-                    .font(.headline)
-                    .fontWeight(.bold)
+                
+                if isEditingTipPercentage {
+                    // Show the TextField for manual percentage input
+                    TextField("Enter %", value: $tipPercentage, format: .number)
+                        .textFieldStyle(.roundedBorder)
+                        .keyboardType(.decimalPad)
+                        .focused($focusedField, equals: .tipPercentage)
+                } else {
+                    Text("\(tipPercentage, specifier: "%.0f")%")
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                        .onTapGesture {
+                            isEditingTipPercentage = true
+                            focusedField = .tipPercentage
+                        }
+                }
             }
             .padding()
+            .toolbar {
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done") {
+                        focusedField = nil
+                        isEditingTipPercentage = false
+                    }
+                }
+            }
             Text("Common percentages")
                 .font(.subheadline)
                 .fontWeight(.medium)
