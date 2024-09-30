@@ -16,8 +16,7 @@ struct ContentView: View {
     @State var selectedSplitCount: String = "1"
     @State var otherSplitCount: String = ""
     
-    @State var roundToNearest: Bool = false
-    
+    @State var roundToNearest: Bool = false    
     // Computed properties for tip and total
     // See: https://docs.swift.org/swift-book/documentation/the-swift-programming-language/properties/#
     var tip: Double {
@@ -26,13 +25,24 @@ struct ContentView: View {
     
     // Total without any rounding
     var unroundedTotal: Double {
-        billAmount + (billAmount * (tipPercentage / 100 ))
+        if billAmount == 0 {
+            return 0.0
+        }
+        
+        return billAmount + max(0.01, billAmount * (tipPercentage / 100 ))
+    }
+    
+    var minTip: Double {
+        max(0.01, billAmount * 0.01)
     }
     
     // If roundToNearest is true, return a rounded total, otherwise, return the unrounded total
     var total: Double {
         if roundToNearest {
-            let minTip = max(0.01, billAmount * 0.01)
+            if billAmount == 0 {
+                return 0.0
+            }
+            
             let roundedTotal = unroundedTotal.rounded()
             
             if (roundedTotal - billAmount < minTip) {
@@ -48,7 +58,7 @@ struct ContentView: View {
     var splitTotal: Double {
         return (total / Double(splitCount))
     }
-    
+
     var splitTip: Double {
         return (tip / Double(splitCount))
     }
