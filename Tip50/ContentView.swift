@@ -15,15 +15,27 @@ struct ContentView: View {
     // The number of people the bill is being split between
     @State var selectedSplitCount: String = "1"
     @State var otherSplitCount: String = ""
-        
+    
+    @State var roundToNearest: Bool = false
+    
     // Computed properties for tip and total
     // See: https://docs.swift.org/swift-book/documentation/the-swift-programming-language/properties/#
     var tip: Double {
-        return billAmount * (tipPercentage / 100)
+        return total - billAmount
     }
-
+    
+    // Total without any rounding
+    var unroundedTotal: Double {
+        billAmount + (billAmount * (tipPercentage / 100 ))
+    }
+    
+    // If roundToNearest is true, return a rounded total, otherwise, return the unrounded total
     var total: Double {
-        return billAmount + tip
+        if roundToNearest {
+            return unroundedTotal.rounded()
+        }
+        
+        return unroundedTotal
     }
     
     var splitTotal: Double {
@@ -98,6 +110,10 @@ struct ContentView: View {
                 Text("25%").tag(25.0)
             }
             .pickerStyle(.segmented)
+            
+            Toggle(isOn: $roundToNearest) {
+                Text("Round to nearest dollar")
+            }
             
         }
         .padding()
