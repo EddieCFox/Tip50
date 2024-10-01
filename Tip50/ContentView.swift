@@ -99,6 +99,7 @@ struct ContentView: View {
                 // https://www.hackingwithswift.com/quick-start/swiftui/how-to-format-a-textfield-for-numbers
                     Text("Bill Amount: $")
                         .font(.headline)
+                        .fontWeight(.bold)
                         .padding(.leading, 15)
                     TextField("0.00", value: $billAmount, format: .number)
                         .textFieldStyle(.roundedBorder)
@@ -115,6 +116,7 @@ struct ContentView: View {
                 HStack {
                     Text("Tip percentage:")
                         .font(.headline)
+                        .fontWeight(.bold)
                     Slider(value: $tipPercentage, in: 1...50, step: 1.0)
                     
                     if isEditingTipPercentage {
@@ -146,6 +148,7 @@ struct ContentView: View {
                 
                 Text("Effective tip percentage: \(effectiveTipPercentage, specifier: "%.1f")%")
                     .font(.subheadline)
+                    .fontWeight(.medium)
                     .foregroundStyle(.gray)
                     .padding(.top, -20)
                     .padding(.bottom, 20)
@@ -208,18 +211,26 @@ struct ContentView: View {
             VStack {
                 HStack {
                     Text("Grand Total:")
-                        .font(.headline)
+                        .font(.title3)
+                        .fontWeight(.bold)
                     Text("$\(total, specifier: "%.2f")")
+                        .font(.title3)
+                        .fontWeight(.bold)
                 }
                 
                 HStack {
                     Text("Tip:")
-                        .font(.headline)
+                        .font(.title3)
+                        .fontWeight(.bold)
                     Text("$\(tip, specifier: "%.2f")")
+                        .font(.title3)
+                        .fontWeight(.bold)
                 }
                 .padding(.bottom, 10)
                 Text("Total Bill per person: $\(splitTotal, specifier: "%.2f")")
+                    .font(.headline)
                 Text("Total Tip per person: $\(splitTip, specifier: "%.2f")")
+                    .font(.headline)
             }
             .padding()
             .padding(.vertical, 10)
