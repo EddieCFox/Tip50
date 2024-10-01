@@ -81,44 +81,36 @@ struct ContentView: View {
     enum Field {
         case billAmount, tipPercentage
     }
+    
     @FocusState private var focusedField: Field?
     
     @State private var isEditingTipPercentage: Bool = false
 
     var body: some View {
-        
         ScrollView {
+            VStack {
+                Text("Tip Calculator")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .padding(.top, 25)
+            }
             VStack {
                 HStack {
                 // https://www.hackingwithswift.com/quick-start/swiftui/how-to-format-a-textfield-for-numbers
-                    Text("Bill Amount:")
+                    Text("Bill Amount: $")
                         .font(.headline)
-                        .padding(.leading, -10)
-                    Text("$")
-                        .font(.headline)
-                        .fontWeight(.bold)
+                        .padding(.leading, 15)
                     TextField("0.00", value: $billAmount, format: .number)
                         .textFieldStyle(.roundedBorder)
                         .keyboardType(.decimalPad)
                         .focused($focusedField, equals: .billAmount)
+                        .padding(.leading, -5)
                 }
                 .padding()
-                
-                HStack {
-                    Text("Tip:")
-                        .font(.headline)
-                    Text("$\(tip, specifier: "%.2f")")
-                }
-                .padding()
-                
-                HStack {
-                    Text("Grand Total:")
-                        .font(.headline)
-                    Text("$\(total, specifier: "%.2f")")
-                }
-                
+                .padding(.top, 20)
+                .padding(.bottom, -25)
             }
-            
+
             VStack {
                 HStack {
                     Text("Tip percentage:")
@@ -170,21 +162,24 @@ struct ContentView: View {
                 }
                 .pickerStyle(.segmented)
                 .padding(.bottom, 10)
-                
+                                
+            }
+            .padding()
+            
+            VStack {
                 Toggle(isOn: $roundToNearest) {
                     Text("Round total to nearest dollar")
                     Text("Rounding will not lower total below bill amount")
                         .font(.caption)
                 }
-                
             }
             .padding()
-
+            .padding(.vertical, 15)
+            
             VStack {
-                
                 Text("Number of people splitting the bill:")
-                    .padding()
                     .multilineTextAlignment(.center)
+                    .padding(.top, 15)
                 
                 HStack {
 
@@ -198,6 +193,7 @@ struct ContentView: View {
                         Text("Other").tag("Other")
                     }
                     .pickerStyle(.segmented)
+                    .padding(.top, -10)
                     .padding()
                     
                     if selectedSplitCount == "Other" {
@@ -210,15 +206,31 @@ struct ContentView: View {
             }
             
             VStack {
+                HStack {
+                    Text("Grand Total:")
+                        .font(.headline)
+                    Text("$\(total, specifier: "%.2f")")
+                }
+                
+                HStack {
+                    Text("Tip:")
+                        .font(.headline)
+                    Text("$\(tip, specifier: "%.2f")")
+                }
+                .padding(.bottom, 10)
                 Text("Total Bill per person: $\(splitTotal, specifier: "%.2f")")
                 Text("Total Tip per person: $\(splitTip, specifier: "%.2f")")
+            }
+            .padding()
+            .padding(.vertical, 10)
+            
+            VStack {
                 ShareLink(item: shareText()) {
                     Label("Share Details", systemImage: "square.and.arrow.up")
                         .font(.headline)
                         .padding()
                 }
             }
-            .padding()
         }
         .ignoresSafeArea(.keyboard)
     }
