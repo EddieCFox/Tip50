@@ -164,6 +164,7 @@ struct ContentView: View {
                     Text("25%").tag(25.0)
                 }
                 .pickerStyle(.segmented)
+                .colorMultiply(.cyan)
                 .padding(.bottom, 10)
                                 
             }
@@ -196,6 +197,7 @@ struct ContentView: View {
                         Text("Other").tag("Other")
                     }
                     .pickerStyle(.segmented)
+                    .colorMultiply(.cyan)
                     .padding(.top, -10)
                     .padding()
                     
