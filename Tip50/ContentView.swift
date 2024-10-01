@@ -89,7 +89,7 @@ struct ContentView: View {
     var body: some View {
         ScrollView {
             VStack {
-                Text("Tip Calculator")
+                Text("Tip50")
                     .font(.largeTitle)
                     .fontWeight(.bold)
                     .padding(.top, 25)
