@@ -34,9 +34,9 @@ struct ContentView: View {
     // this variable is set to false, and the TextField disappears
     @State private var isEditingTipPercentage: Bool = false
     
-    // Custon enum to hold the two different TextFields in our app
+    // Custon enum to hold the different TextFields in our app
     enum Field {
-        case billAmount, tipPercentage
+        case billAmount, tipPercentage, splitCount
     }
     
     // FocusState variable that tracks which TextField, if any, is currently in focus on the application
@@ -202,21 +202,6 @@ struct ContentView: View {
                     }
                 }
                 .padding()
-                // The toolbar is placed on top of the keyboard that is brought up when the user clicks on a TextField.
-                // There is a "Done" button on the right that the user can click to submit the text in the TextField,
-                // dismiss the keyboard, and remove focus from the TextField. The view will then update according to
-                // the new TextField values.
-                .toolbar {
-                    ToolbarItemGroup(placement: .keyboard) {
-                        Spacer()
-                        Button("Done") {
-                            focusedField = nil
-                            // This variable is also set to false so that if the tipPercentage TextField was
-                            // showing, it will be dismissed
-                            isEditingTipPercentage = false
-                        }
-                    }
-                }
                 
                 // As stated in the variable explanation, this shows the actual tip percentage that is being
                 // applied, regardless of what the user selected as the tip percentage. This can be
@@ -292,6 +277,7 @@ struct ContentView: View {
                         TextField("# of people", text: $otherSplitCount)
                             .keyboardType(.decimalPad)
                             .textFieldStyle(.roundedBorder)
+                            .focused($focusedField, equals: .splitCount)
                             .padding()
                     }
                 }
@@ -334,6 +320,21 @@ struct ContentView: View {
                     Label("Share Details", systemImage: "square.and.arrow.up")
                         .font(.headline)
                         .padding()
+                }
+            }
+        }
+        // The toolbar is placed on top of the keyboard that is brought up when the user clicks on a TextField.
+        // There is a "Done" button on the right that the user can click to submit the text in the TextField,
+        // dismiss the keyboard, and remove focus from the TextField. The view will then update according to
+        // the new TextField values.
+        .toolbar {
+            ToolbarItemGroup(placement: .keyboard) {
+                Spacer()
+                Button("Done") {
+                    focusedField = nil
+                    // This variable is also set to false so that if the tipPercentage TextField was
+                    // showing, it will be dismissed
+                    isEditingTipPercentage = false
                 }
             }
         }
